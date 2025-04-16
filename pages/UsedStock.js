@@ -13,6 +13,8 @@ const UsedStock = () => {
   const [scale, setScale] = useState(null);
   const [quantity, setQuantity] = useState('');
   const [description, setDescription] = useState(''); // New state for description
+    const [loading, setLoading] = useState(false);
+  
 
   // List state for multiple items
   const [usedStockList, setUsedStockList] = useState([]);
@@ -109,14 +111,16 @@ const UsedStock = () => {
     setUsedStockList(filteredList);
   };
 
-  const handleSubmitAll = async () => {
+  const saveToStock = async () => {
+    setLoading(true)
     if (usedStockList.length === 0) {
       Alert.alert('No used stock items to submit.');
+      setLoading(false)
       return;
     }
 
     try {
-      const response = await axios.post('https://your-backend-api.com/api/usedstock', {
+      const response = await axios.post('https://inventory-backend-41kx.onrender.com/usedstock', {
         usedStock: usedStockList,
       });
 
@@ -129,7 +133,8 @@ const UsedStock = () => {
     } catch (error) {
       console.error('Submission error:', error);
       Alert.alert('There was an error submitting your used stock.');
-    }
+      setLoading(false)
+    }finally{setLoading(false)}
   };
 
   return (
@@ -164,12 +169,17 @@ const UsedStock = () => {
         
         {/* Description Input */}
         <Text style={styles.label}>Description</Text>
-        <TextInput
-          style={[styles.textInput, { marginBottom: 10, backgroundColor: 'whitesmoke' }]}
-          placeholder="Enter item description"
-          value={description}
-          onChangeText={setDescription}
-        />
+         <View className="  rounded-md"  style={{ backgroundColor: 'whitesmoke',width:'100%' }}>
+                 <TextInput
+                   
+                   style={ {   backgroundColor: 'whitesmoke' ,borderRadius:10 ,margin:10}}
+                   placeholder="Enter item description"
+                   value={description}
+                   onChangeText={setDescription}
+                   multiline
+                   
+                 />
+               </View>
         
         {/* Quantity and Scale */}
         <Text style={styles.label}>Quantity</Text>
@@ -218,8 +228,8 @@ const UsedStock = () => {
               </View>
             ))}
             {/* Submit All Button */}
-            <TouchableOpacity onPress={handleSubmitAll} style={styles.submitButton}>
-              <Text style={styles.submitButtonText}>Submit All Used Stock</Text>
+            <TouchableOpacity onPress={saveToStock} style={styles.submitButton}>
+               {loading?  <ActivityIndicator size="large" color="teal" />: <Text style={styles.submitButtonText}>Save to stock</Text>}
             </TouchableOpacity>
           </View>
         )}
@@ -248,7 +258,7 @@ const styles = StyleSheet.create({
   },
   dropdownContainer: {
     backgroundColor: 'whitesmoke',
-    elevation: 10,
+     
     borderRadius: 8,
     marginVertical: 10,
     paddingHorizontal: 10,
@@ -271,6 +281,8 @@ const styles = StyleSheet.create({
     flex: 1,
     borderRadius: 4,
     overflow: 'hidden',
+     borderTopRightRadius: 10,
+    borderBottomRightRadius:10
   },
   addButton: {
     flexDirection: 'row',

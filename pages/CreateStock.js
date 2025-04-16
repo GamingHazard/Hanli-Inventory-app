@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+ import React, { useState, useEffect } from 'react';
 import { SafeAreaView, StyleSheet, View, Text, TextInput, ScrollView, Alert } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
 import { TouchableOpacity } from 'react-native';
@@ -15,15 +15,12 @@ const CreateStock = () => {
   const [remainderScale, setRemainderScale] = useState(null);
   const [quantity, setQuantity] = useState('');
   const [remainder, setRemainder] = useState('');
-  const [description, setDescription] = useState(''); // New state for description
+  const [description, setDescription] = useState('');
   const [activeTab, setActiveTab] = useState(1);
+  const [loading, setLoading] = useState(true);
 
   // Added state for multiple inventory items
   const [inventoryList, setInventoryList] = useState([]);
-
-  const handleTabClick = (tabIndex) => {
-    setActiveTab(tabIndex);
-  };
 
   // Data lists
   const remainderscales = [
@@ -98,14 +95,14 @@ const CreateStock = () => {
       return;
     }
     const newInventory = {
-      id: Date.now(), // Unique ID based on timestamp (for demo purposes)
+      id: Date.now(),
       category,
       item: foodStuff,
       quantity,
       scale,
       remainder,
       remainderScale,
-      description, // Include description in the inventory object
+      description,
     };
     setInventoryList([...inventoryList, newInventory]);
     // Reset the form fields for a new entry
@@ -115,7 +112,7 @@ const CreateStock = () => {
     setScale(null);
     setRemainder('');
     setRemainderScale(null);
-    setDescription(''); // Reset description
+    setDescription('');
   };
 
   // Deletes an inventory item by its id
@@ -124,9 +121,11 @@ const CreateStock = () => {
     setInventoryList(filteredInventories);
   };
 
-  const handleSubmitAll = async () => {
+  const saveStock = async () => {
+    setLoading(true)
     if (inventoryList.length === 0) {
       Alert.alert('No inventory to submit.');
+      setLoading(false)
       return;
     }
 
@@ -137,14 +136,15 @@ const CreateStock = () => {
 
       if (response.status === 200 || response.status === 201) {
         Alert.alert('Inventory submitted successfully!');
-        setInventoryList([]); // Clear list after successful submission
+        setInventoryList([]);
       } else {
         Alert.alert('Failed to submit inventory. Please try again.');
       }
     } catch (error) {
       console.error('Submission error:', error);
       Alert.alert('There was an error submitting your inventory.');
-    }
+      setLoading(false)
+    }finally{setLoading(false)}
   };
 
   return (
@@ -179,18 +179,17 @@ const CreateStock = () => {
 
         {/* Description Input */}
         <Text style={styles.label}>Description</Text>
-       
-                <View className="flex-row px-6 rounded-md" style= {{ backgroundColor: 'whitesmoke'}}>
+        <View className="  rounded-md"  style={{ backgroundColor: 'whitesmoke',width:'100%' }}>
           <TextInput
-          style={[styles.textInput, { marginBottom: 10, backgroundColor: 'whitesmoke' }]}
-          placeholder="Enter item description"
-          value={description}
-                  onChangeText={setDescription}
-                  multiline
-              />
-          ef
+            
+            style={ {   backgroundColor: 'whitesmoke' ,borderRadius:10 ,margin:10}}
+            placeholder="Enter item description"
+            value={description}
+            onChangeText={setDescription}
+            multiline
+            
+          />
         </View>
-
 
         {/* Quantity Input with Scale */}
         <Text style={styles.label}>Quantity</Text>
@@ -222,7 +221,6 @@ const CreateStock = () => {
             placeholder='Enter remainders...'
             value={remainder}
             onChangeText={setRemainder}
-            
           />
           <View style={styles.scalePicker}>
             <RNPickerSelect
@@ -266,7 +264,7 @@ const CreateStock = () => {
             ))}
 
             {/* Submit All Inventory Items Button */}
-            <TouchableOpacity onPress={handleSubmitAll} style={styles.submitButton}>
+            <TouchableOpacity onPress={saveStock} style={styles.submitButton}>
               <Text style={styles.submitButtonText}>Submit All Inventory</Text>
             </TouchableOpacity>
           </View>
@@ -296,13 +294,19 @@ const styles = StyleSheet.create({
   },
   dropdownContainer: {
     backgroundColor: 'whitesmoke',
-    elevation: 10,
+     
     borderRadius: 8,
     marginVertical: 10,
     paddingHorizontal: 10,
   },
-    rowContainer: {
-       flexDirection: 'row',
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 6,
+    borderRadius: 8,
+  },
+  rowContainer: {
+    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-evenly',
     marginVertical: 5,
@@ -319,6 +323,10 @@ const styles = StyleSheet.create({
     flex: 1,
     borderRadius: 4,
     overflow: 'hidden',
+    borderWidth: 0.9,
+    borderColor: 'lightgrey',
+    borderTopRightRadius: 10,
+    borderBottomRightRadius:10
   },
   addButton: {
     flexDirection: 'row',

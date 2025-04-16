@@ -1,11 +1,11 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { SafeAreaView, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 
 const ProfileScreen = () => {
   return (
-    <View>
+    <SafeAreaView className="flex-1 flex-row justify-center align-middle text-center">
       <Text>ProfileScreen</Text>
-    </View>
+    </SafeAreaView>
   )
 }
 

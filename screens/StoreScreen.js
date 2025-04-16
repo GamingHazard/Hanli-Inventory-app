@@ -97,7 +97,7 @@ const StoreScreen = () => {
   if (loading) {
     return (
       <View style={[styles.container, styles.loaderContainer]}>
-        <ActivityIndicator size="large" color="tomato" />
+        <ActivityIndicator size="large" color="teal" />
       </View>
     );
   }

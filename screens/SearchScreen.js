@@ -26,7 +26,7 @@ const SearchScreen = () => {
 
     try {
       setLoading(true);
-      const response = await axios.get(`https://your-backend-api.com/api/inventory/search?q=${query}`);
+      const response = await axios.get(`https://inventory-backend-41kx.onrender.com/inventory/search?q=${query}`);
       setResults(response.data); // Adjust based on API response format
     } catch (error) {
       console.error('Search error:', error);
