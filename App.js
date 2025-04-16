@@ -3,28 +3,21 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { createStackNavigator } from "@react-navigation/stack";
+import { FontAwesome6 } from "@expo/vector-icons";
 import "./global.css";
 
 // Screens
-import HomeScreen from "./screens/HomeScreen";
+import HomeScreen from "./screens/HomeScreen.js";
 import SearchScreen from "./screens/SearchScreen";
-import BookmarksScreen from "./screens/BookmarkScreen";
-import NewsScreen from "./screens/NewsScreen";
-import CoursesScreen from "./screens/CoursesScreen";
-import ProfileScrren from "./screens/ProfileScreen";
-import SettingsPage from "./pages/settings/SettingsPage";
-import AccountPage from "./pages/settings/AccountPage";
-import AboutPage from "./pages/settings/AboutPage";
-import AppSettingsPage from "./pages/settings/AppSettingsPage";
-import FAQPage from "./pages/settings/FAQPage";
-import HelpPage from "./pages/settings/HelpPage";
-import SecurityPage from "./pages/settings/SecurityPage";
+ 
 import DetailsPage from "./pages/DetailsPage";
-import EnrolledCourse from "./pages/EnrolledCourse";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import AuthForm from "./pages/auth/AuthPage";
-import Form from "./pages/auth/Form";
-import { AuthContext } from "./contexts/AuthContext";
+ 
+import AuthForm from "./pages/AuthPage";
+import StoreScreen from "./screens/StoreScreen.js";
+import ProfileScreen from "./screens/ProfileScreen.js";
+import { AuthProvider,AuthContext } from "./context/AuthContext.js";
+import { SafeAreaView } from "react-native";
+import { StatusBar } from "expo-status-bar";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -40,13 +33,13 @@ export default function App() {
 
             switch (route.name) {
               case "Home":
-                iconName = focused ? "home" : "home-outline";
+                iconName = focused ? "home": "home-outline";
                 break;
               case "Search":
                 iconName = focused ? "search" : "search-outline";
                 break;
-              case "Bookmarks":
-                iconName = focused ? "bookmark" : "bookmark-outline";
+              case "Store":
+                iconName = focused ? "storefront" : "storefront-outline";
                 break;
               case "News":
                 iconName = focused ? "list" : "list-outline";
@@ -69,18 +62,23 @@ export default function App() {
       >
         <Tab.Screen name="Home" component={HomeScreen} />
         <Tab.Screen name="Search" component={SearchScreen} />
-        <Tab.Screen name="Bookmarks" component={BookmarksScreen} />
-        <Tab.Screen name="News" component={NewsScreen} />
-        <Tab.Screen name="courses" component={CoursesScreen} />
-        <Tab.Screen name="Profile" component={ProfileScrren} />
+        <Tab.Screen name="Store" component={StoreScreen} />
+        <Tab.Screen name="Profile" component={ProfileScreen} />
       </Tab.Navigator>
     );
   }
 
-  const { verified } = useContext(AuthContext);
+  // const { verified } = useContext(AuthContext);
   return (
-    <NavigationContainer>
+    <AuthProvider> <SafeAreaView className="flex-1"><StatusBar hidden={ false} /><NavigationContainer>
       <Stack.Navigator>
+         <Stack.Screen
+              name="/"
+              component={BottomNavs}
+              options={{ headerShown: false }}
+            />
+      </Stack.Navigator>
+      {/* <Stack.Navigator>
         {verified === true ? (
           <React.Fragment>
             <Stack.Screen
@@ -148,7 +146,8 @@ export default function App() {
             />
           </React.Fragment>
         )}
-      </Stack.Navigator>
-    </NavigationContainer>
+      </Stack.Navigator> */}
+    </NavigationContainer></SafeAreaView></AuthProvider>
+   
   );
 }

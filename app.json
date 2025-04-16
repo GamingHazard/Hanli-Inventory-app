@@ -21,10 +21,9 @@
         "backgroundColor": "#ffffff"
       }
     },
-    "expo": {
-      "web": {
-        "bundler": "metro"
-      }
-    }
+    "web": {
+      "bundler": "metro"
+    },
+    "platforms": ["ios", "android", "web"]
   }
 }
