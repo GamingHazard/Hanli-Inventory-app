@@ -37,7 +37,7 @@ const HomeScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <Text className="text-center my-20" style={{ fontWeight: 'bold', fontSize: 26 }} >My Inventory App</Text>
-          <View className="flex-row px-4 my-5 justify-evenly align-middle">
+          <View  className="flex-row px-4 py-2 my-5 justify-evenly align-middle">
         <TouchableOpacity onPress={() => handleTabClick(1)} style={{ backgroundColor: activeTab === 1 ?"teal":'whitesmoke' }} className='flex-row p-3 rounded-md'><Text style={{color:activeTab===1 ?'white':'black',fontWeight:activeTab===1?"bold":'none',fontSize:activeTab===1?20:14}}>Current Stock</Text></TouchableOpacity>
         <TouchableOpacity onPress={() => handleTabClick(2)} style={{ backgroundColor: activeTab === 2 ?"teal":'whitesmoke' }} className='flex-row p-3 rounded-md'><Text style={{color:activeTab===2 ?'white':'black',fontWeight:activeTab===2?"bold":'none',fontSize:activeTab===2?20:14}}>Used Stock</Text></TouchableOpacity>
         </View>

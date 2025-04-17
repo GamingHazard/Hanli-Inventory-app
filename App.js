@@ -5,17 +5,13 @@ import { createStackNavigator } from "@react-navigation/stack";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { StatusBar } from "expo-status-bar";
 import NetInfo from "@react-native-community/netinfo";
-import * as SplashScreen from "expo-splash-screen";
+ 
 
 import HomeScreen from "./screens/HomeScreen.js";
 import SearchScreen from "./screens/SearchScreen";
 import StoreScreen from "./screens/StoreScreen.js";
 import ProfileScreen from "./screens/ProfileScreen.js";
-import DetailsPage from "./pages/DetailsPage";
-import AuthForm from "./pages/AuthPage";
-import Splash from "./screens/SplashScreen.js"; // your custom splash component
-
-SplashScreen.preventAutoHideAsync(); // Keep native splash until ready
+ 
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -24,18 +20,7 @@ export default function App() {
   const [isAppReady, setAppReady] = useState(false);
   const [isOnline, setIsOnline] = useState(null);
 
-  // Check internet and prepare app
-  useEffect(() => {
-    const prepare = async () => {
-      const net = await NetInfo.fetch();
-      setIsOnline(net.isConnected);
-      // Simulate some load like font/assets check
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      setAppReady(true);
-      await SplashScreen.hideAsync(); // Hide native splash
-    };
-    prepare();
-  }, []);
+   
 
   const BottomNavs = () => (
     <Tab.Navigator
@@ -72,10 +57,7 @@ export default function App() {
     </Tab.Navigator>
   );
 
-  // Show custom splash while preparing app
-  if (!isAppReady) {
-    return <Splash isOnline={isOnline} />;
-  }
+  
 
   return (
     <NavigationContainer>

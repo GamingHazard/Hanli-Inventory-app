@@ -17,7 +17,7 @@ const CreateStock = () => {
   const [remainder, setRemainder] = useState('');
   const [description, setDescription] = useState('');
   const [activeTab, setActiveTab] = useState(1);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   // Added state for multiple inventory items
   const [inventoryList, setInventoryList] = useState([]);
@@ -58,13 +58,14 @@ const CreateStock = () => {
     { label: 'Potassium Srobate', value: 'Potassium Srobate' },
     { label: 'Citric Acid', value: 'Citric Acid' },
     { label: 'Tri Sodium Citrate', value: 'Tri Sodium Citrate' },
-    { label: 'Sodium Dehydroacette', value: 'Sodium Dehydroacette' },
+    { label: 'Sodium Dehydroacetate', value: 'Sodium Dehydroacetate' },
     { label: 'Tri Sodium Ethyn', value: 'Tri Sodium Ethyn' },
     { label: 'Sodium Carboxymethyl Cellulose (CMC)', value: 'Sodium Carboxymethyl Cellulose (CMC)' },
     { label: 'Titanium Dioxide', value: 'Titanium Dioxide' },
     { label: 'Xanthon Gum', value: 'Xanthon Gum' },
     { label: 'Food Aditive', value: 'Food Aditive' },
     { label: 'Sweetener', value: 'Sweetener' },
+    { label: 'Malic Acid', value: 'Malic Acid' },
   ];
 
   const packingItems = [
@@ -265,7 +266,10 @@ const CreateStock = () => {
 
             {/* Submit All Inventory Items Button */}
             <TouchableOpacity onPress={saveStock} style={styles.submitButton}>
-              <Text style={styles.submitButtonText}>Submit All Inventory</Text>
+              {loading?  <ActivityIndicator size="large" color="teal" />: <Text style={styles.submitButtonText}>Submit All Inventory</Text>}
+             
+                   
+              
             </TouchableOpacity>
           </View>
         )}

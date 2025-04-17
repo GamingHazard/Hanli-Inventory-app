@@ -8,7 +8,7 @@
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/ic_launcher.png",
+      "image": "./assets/ic_launcher_foreground.png",
       "resizeMode": "contain",
       "backgroundColor": "#e42527"
     },
@@ -18,7 +18,7 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/ic_launcher_foreground.png",
-        "backgroundColor": "#e42527"
+        "backgroundColor": "white"
       },
       "package": "com.gost150.app"
     },
@@ -32,7 +32,7 @@
     ],
     "extra": {
       "eas": {
-        "projectId": "2c7731f8-e463-452b-9787-b7cf2740d486"
+        "projectId": "03706bf7-5afb-40d3-83c7-4ae62ba60974"
       }
     }
   }
