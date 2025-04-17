@@ -10,15 +10,14 @@ import NetInfo from "@react-native-community/netinfo";
 import HomeScreen from "./screens/HomeScreen.js";
 import SearchScreen from "./screens/SearchScreen";
 import StoreScreen from "./screens/StoreScreen.js";
-import ProfileScreen from "./screens/ProfileScreen.js";
+import Calculator from "./screens/CalculatorPage.js";
  
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
 export default function App() {
-  const [isAppReady, setAppReady] = useState(false);
-  const [isOnline, setIsOnline] = useState(null);
+  
 
    
 
@@ -38,8 +37,8 @@ export default function App() {
             case "Store":
               iconName = focused ? "storefront" : "storefront-outline";
               break;
-            case "Profile":
-              iconName = focused ? "person" : "person-outline";
+            case "Calculator":
+              iconName = focused ? "calculator" : "calculator-outline";
               break;
             default:
               iconName = "ellipse";
@@ -53,7 +52,7 @@ export default function App() {
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Search" component={SearchScreen} />
       <Tab.Screen name="Store" component={StoreScreen} />
-      <Tab.Screen name="Profile" component={ProfileScreen} />
+      <Tab.Screen name="Calculator" component={Calculator} />
     </Tab.Navigator>
   );
 
