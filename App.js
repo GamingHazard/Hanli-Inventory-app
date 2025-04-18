@@ -13,6 +13,7 @@ import SearchScreen from "./screens/SearchScreen";
 import StoreScreen from "./screens/StoreScreen.js";
 import Calculator from "./screens/CalculatorPage.js";
 import "./global.css";
+import DetailsPage from "./pages/DetailsPage.js";
 
 // Prevent auto-hide of splash
 SplashScreen.preventAutoHideAsync();
@@ -92,6 +93,11 @@ export default function App() {
             name="/"
             component={BottomNavs}
             options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="details"
+            component={DetailsPage}
+            options={{ headerShown: true }}
           />
         </Stack.Navigator>
       </NavigationContainer>

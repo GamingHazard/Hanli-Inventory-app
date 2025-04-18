@@ -39,11 +39,13 @@ const CreateStock = () => {
     { label: "Pcs", value: "Pcs" },
     { label: "Kgs", value: "Kgs" },
     { label: "Ltrs", value: "Ltrs" },
+    { label: "Rolls", value: "Rolls" },
   ];
   const scales = [
     { label: "Bags", value: "Bags" },
     { label: "Boxes", value: "Boxes" },
     { label: "Sachets", value: "Sachets" },
+    { label: "Rolls", value: "Rolls" },
   ];
   const categories = [
     { label: "Chemicals", value: "Chemicals" },
@@ -338,9 +340,7 @@ const CreateStock = () => {
               {loading ? (
                 <ActivityIndicator size="large" color="white" />
               ) : (
-                <Text style={styles.submitButtonText}>
-                  Submit All Inventory
-                </Text>
+                <Text style={styles.submitButtonText}>save Inventory</Text>
               )}
             </TouchableOpacity>
           </View>

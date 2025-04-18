@@ -5,7 +5,7 @@ import {
   View,
   Dimensions,
   ActivityIndicator,
-  FlatList,
+  SectionList,
   TouchableOpacity,
 } from "react-native";
 import { TabView, TabBar } from "react-native-tab-view";
@@ -17,7 +17,6 @@ const StoreScreen = () => {
   const [index, setIndex] = useState(0);
   const [routes, setRoutes] = useState([]);
   const [stockData, setStockData] = useState([]);
-  const [usedStockData, setUsedStockData] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const initialLayout = { width: Dimensions.get("window").width };
@@ -25,16 +24,11 @@ const StoreScreen = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [inventoryRes, usedStockRes] = await Promise.all([
-          axios.get("https://inventory-backend-41kx.onrender.com/inventory"),
-          axios.get("https://inventory-backend-41kx.onrender.com/usedstock"),
-        ]);
-
+        const inventoryRes = await axios.get(
+          "https://inventory-backend-41kx.onrender.com/inventory"
+        );
         const inv = inventoryRes.data;
         setStockData(inv);
-        setUsedStockData(usedStockRes.data);
-
-        // derive unique categories for tabs
         const cats = Array.from(new Set(inv.map((i) => i.category)));
         const tabs = cats.map((c) => ({ key: c, title: c }));
         setRoutes(tabs);
@@ -44,44 +38,52 @@ const StoreScreen = () => {
         setLoading(false);
       }
     };
+
     fetchData();
+    const interval = setInterval(fetchData, 3000);
+    return () => clearInterval(interval);
   }, []);
 
   const renderScene = ({ route }) => {
     const itemsInCat = stockData.filter((item) => item.category === route.key);
 
+    // group items by creation date (YYYY-MM-DD)
+    const grouped = itemsInCat.reduce((acc, item) => {
+      const dateKey = new Date(item.postedDate).toISOString().split("T")[0];
+      if (!acc[dateKey]) acc[dateKey] = [];
+      acc[dateKey].push(item);
+      return acc;
+    }, {});
+
+    // build sections sorted by date descending
+    const sections = Object.keys(grouped)
+      .sort((a, b) => new Date(b) - new Date(a))
+      .map((dateKey) => ({ title: dateKey, data: grouped[dateKey] }));
+
     return (
       <View style={styles.scene}>
-        <FlatList
-          data={itemsInCat}
+        <SectionList
+          sections={sections}
           keyExtractor={(item) => item._id}
+          renderSectionHeader={({ section }) => (
+            <Text style={styles.sectionHeader}>{section.title}</Text>
+          )}
           renderItem={({ item }) => {
-            const usedQty = usedStockData
-              .filter(
-                (u) => u.category === item.category && u.item === item.item
-              )
-              .reduce((sum, u) => sum + (parseFloat(u.quantity) || 0), 0);
-
+            const availableQty = parseFloat(item.quantity) || 0;
+            const isLow = availableQty < 3;
             return (
               <TouchableOpacity
-                style={styles.listItem}
-                onPress={() =>
-                  navigation.navigate("StockDetail", { item, usedQty })
-                }
+                style={[styles.listItem, isLow && styles.lowStockItem]}
+                onPress={() => navigation.navigate("details", { item })}
               >
-                <View>
-                  <Text style={styles.itemTitle}>{item.itemName}</Text>
-                  <Text style={styles.itemSub}>
-                    Created: {item.quantity} {item.scale}
-                  </Text>
-                  <Text style={styles.itemSub}>
-                    Used: {usedQty}, Remaining:{" "}
-                    {parseFloat(item.quantity) - usedQty}
-                  </Text>
-                </View>
+                <Text style={styles.itemTitle}>{item.itemName}</Text>
+                <Text style={styles.itemSub}>
+                  Available: {availableQty} {item.scale}
+                </Text>
               </TouchableOpacity>
             );
           }}
+          stickySectionHeadersEnabled={false}
         />
       </View>
     );
@@ -125,18 +127,27 @@ const StoreScreen = () => {
 
 export default StoreScreen;
 
-// Styles
 const styles = StyleSheet.create({
   container: { flex: 1 },
   loaderContainer: { justifyContent: "center", alignItems: "center" },
   scene: { flex: 1, backgroundColor: "#fdfdfd", padding: 10 },
   tabbar: { backgroundColor: "#e42527" },
   indicator: { backgroundColor: "white", fontSize: 18 },
+  sectionHeader: {
+    backgroundColor: "#ddd",
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+    borderRadius: 4,
+    marginTop: 10,
+  },
   listItem: {
-    backgroundColor: "whitesmoke",
     padding: 12,
     marginVertical: 6,
     borderRadius: 8,
+    backgroundColor: "whitesmoke",
+  },
+  lowStockItem: {
+    backgroundColor: "#ffe5e5",
   },
   itemTitle: { fontSize: 18, fontWeight: "bold" },
   itemSub: { fontSize: 14, color: "gray", marginTop: 4 },

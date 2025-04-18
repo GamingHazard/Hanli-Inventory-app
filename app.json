@@ -25,25 +25,12 @@
     "web": {
       "bundler": "metro"
     },
-    "platforms": [
-      "ios",
-      "android",
-      "web"
-    ],
+    "platforms": ["ios", "android", "web"],
     "extra": {
       "eas": {
         "projectId": "03706bf7-5afb-40d3-83c7-4ae62ba60974"
       }
-    },"plugins": [
-      [
-        "@sentry/react-native/expo",
-        {
-          "organization": "sentry org slug, or use the `SENTRY_ORG` environment variable",
-          "project": "sentry project name, or use the `SENTRY_PROJECT` environment variable",
-          
-          "url": "https://sentry.io/"
-        }
-      ]
-    ]
+    },
+    "plugins": []
   }
 }

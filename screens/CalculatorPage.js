@@ -107,7 +107,7 @@ const Calculator = () => {
             justifyContent: "center",
             alignItems: "center",
             height: 40,
-            backgroundColor: "crimson",
+            backgroundColor: "#e42527",
           }}
           className="flex-row rounded-md  "
         >
@@ -132,6 +132,7 @@ const Calculator = () => {
                 borderBottomWidth: 0.8,
                 borderColor: "lightgrey",
                 marginBottom: 20,
+                marginTop: 5,
               }}
             >
               <Text key={idx} style={styles.historyItem}>
