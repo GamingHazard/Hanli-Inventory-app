@@ -130,8 +130,8 @@ const styles = StyleSheet.create({
   container: { flex: 1 },
   loaderContainer: { justifyContent: "center", alignItems: "center" },
   scene: { flex: 1, backgroundColor: "#fdfdfd", padding: 10 },
-  tabbar: { backgroundColor: "tomato" },
-  indicator: { backgroundColor: "white" },
+  tabbar: { backgroundColor: "#e42527" },
+  indicator: { backgroundColor: "white", fontSize: 18 },
   listItem: {
     backgroundColor: "whitesmoke",
     padding: 12,

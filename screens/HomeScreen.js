@@ -11,17 +11,12 @@ import RNPickerSelect from "react-native-picker-select";
 import { TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import CreateStock from "../pages/CreateStock";
-import UsedStock from "../pages/UsedStock";
+import Juice from "../pages/Juice";
 
 const HomeScreen = () => {
   const [options, setOptions] = useState([]);
   const [category, setCategory] = useState(null);
-  const [foodStuff, setFoodStuff] = useState(null);
-  const [packingTools, setPackingTools] = useState(null);
-  const [scale, setScale] = useState(null);
-  const [remainderScale, setRemainderScale] = useState(null);
-  const [quantity, setQuantity] = useState("");
-  const [remainder, setRemainder] = useState("");
+
   const [activeTab, setActiveTab] = useState(1);
   const handleTabClick = (tabIndex) => {
     setActiveTab(tabIndex);
@@ -79,7 +74,7 @@ const HomeScreen = () => {
               fontSize: activeTab === 2 ? 20 : 14,
             }}
           >
-            Used Stock
+            Juice Cycles
           </Text>
         </TouchableOpacity>
       </View>
@@ -91,7 +86,7 @@ const HomeScreen = () => {
         )}
         {activeTab === 2 && (
           <View>
-            <UsedStock />
+            <Juice />
           </View>
         )}
       </ScrollView>
