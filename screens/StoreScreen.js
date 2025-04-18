@@ -1,98 +1,91 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, Dimensions, ActivityIndicator } from 'react-native';
-import { TabView, TabBar } from 'react-native-tab-view';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Dimensions,
+  ActivityIndicator,
+  FlatList,
+  TouchableOpacity,
+} from "react-native";
+import { TabView, TabBar } from "react-native-tab-view";
+import axios from "axios";
+import { useNavigation } from "@react-navigation/native";
 
 const StoreScreen = () => {
+  const navigation = useNavigation();
   const [index, setIndex] = useState(0);
   const [routes, setRoutes] = useState([]);
   const [stockData, setStockData] = useState([]);
   const [usedStockData, setUsedStockData] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const initialLayout = { width: Dimensions.get("window").width };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Fetch both inventory (created stock) and used stock concurrently.
-        const [inventoryResponse, usedStockResponse] = await Promise.all([
-          axios.get('https://inventory-backend-41kx.onrender.com/inventory'),
-          axios.get('https://inventory-backend-41kx.onrender.com/usedstock')
+        const [inventoryRes, usedStockRes] = await Promise.all([
+          axios.get("https://inventory-backend-41kx.onrender.com/inventory"),
+          axios.get("https://inventory-backend-41kx.onrender.com/usedstock"),
         ]);
-        
-        const inventoryData = inventoryResponse.data;
-        const usedStock = usedStockResponse.data;
 
-        setStockData(inventoryData);
-        setUsedStockData(usedStock);
+        const inv = inventoryRes.data;
+        setStockData(inv);
+        setUsedStockData(usedStockRes.data);
 
-        // Create routes based on the inventory data.
-        const newRoutes = inventoryData.map((item, idx) => ({
-          key: item._id ? item._id.toString() : idx.toString(),
-          title: item.itemName || `Stock ${idx + 1}`,
-        }));
-        setRoutes(newRoutes);
-        setLoading(false);
-      } catch (error) {
-        console.error('Error fetching stock data:', error.message);
+        // derive unique categories for tabs
+        const cats = Array.from(new Set(inv.map((i) => i.category)));
+        const tabs = cats.map((c) => ({ key: c, title: c }));
+        setRoutes(tabs);
+      } catch (e) {
+        console.error("Fetch error:", e);
+      } finally {
         setLoading(false);
       }
     };
-
     fetchData();
   }, []);
 
   const renderScene = ({ route }) => {
-    // Find the created stock item based on the route key.
-    const item = stockData.find(
-      (stock) => (stock._id ? stock._id.toString() : '') === route.key
-    );
-
-    if (!item) {
-      return (
-        <View style={styles.scene}>
-          <Text>No Data</Text>
-        </View>
-      );
-    }
-
-    // Convert created stock quantity to a number.
-    const createdQuantity = parseFloat(item.quantity) || 0;
-
-    // Sum up the total used quantity that matches the same category and item.
-    const totalUsedQuantity = usedStockData
-      .filter(
-        (used) =>
-          used.category === item.category &&
-          used.item === item.item
-      )
-      .reduce((sum, used) => sum + (parseFloat(used.quantity) || 0), 0);
-
-    // Compute the difference.
-    const remainingQuantity = createdQuantity - totalUsedQuantity;
+    const itemsInCat = stockData.filter((item) => item.category === route.key);
 
     return (
       <View style={styles.scene}>
-        <Text style={styles.title}>{item.itemName}</Text>
-        <Text style={styles.detail}>Category: {item.category}</Text>
-        <Text style={styles.detail}>
-          Created Quantity: {item.quantity} {item.scale}
-        </Text>
-        {item.remainder ? (
-          <Text style={styles.detail}>
-            Remainder: {item.remainder} {item.remainderScale || ''}
-          </Text>
-        ) : null}
-        <Text style={styles.detail}>
-          Used Quantity: {totalUsedQuantity}
-        </Text>
-        <Text style={[styles.detail, { fontWeight: 'bold' }]}>
-          Remaining: {remainingQuantity}
-        </Text>
+        <FlatList
+          data={itemsInCat}
+          keyExtractor={(item) => item._id}
+          renderItem={({ item }) => {
+            const usedQty = usedStockData
+              .filter(
+                (u) => u.category === item.category && u.item === item.item
+              )
+              .reduce((sum, u) => sum + (parseFloat(u.quantity) || 0), 0);
+
+            return (
+              <TouchableOpacity
+                style={styles.listItem}
+                onPress={() =>
+                  navigation.navigate("StockDetail", { item, usedQty })
+                }
+              >
+                <View>
+                  <Text style={styles.itemTitle}>{item.itemName}</Text>
+                  <Text style={styles.itemSub}>
+                    Created: {item.quantity} {item.scale}
+                  </Text>
+                  <Text style={styles.itemSub}>
+                    Used: {usedQty}, Remaining:{" "}
+                    {parseFloat(item.quantity) - usedQty}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            );
+          }}
+        />
       </View>
     );
   };
-
-  const initialLayout = { width: Dimensions.get('window').width };
 
   if (loading) {
     return (
@@ -121,8 +114,8 @@ const StoreScreen = () => {
           <TabBar
             {...props}
             scrollEnabled
-            indicatorStyle={{ backgroundColor: 'white' }}
-            style={{ backgroundColor: 'tomato' }}
+            indicatorStyle={styles.indicator}
+            style={styles.tabbar}
           />
         )}
       />
@@ -132,32 +125,20 @@ const StoreScreen = () => {
 
 export default StoreScreen;
 
+// Styles
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
+  container: { flex: 1 },
+  loaderContainer: { justifyContent: "center", alignItems: "center" },
+  scene: { flex: 1, backgroundColor: "#fdfdfd", padding: 10 },
+  tabbar: { backgroundColor: "tomato" },
+  indicator: { backgroundColor: "white" },
+  listItem: {
+    backgroundColor: "whitesmoke",
+    padding: 12,
+    marginVertical: 6,
+    borderRadius: 8,
   },
-  loaderContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  scene: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#fdfdfd',
-    padding: 20,
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 8,
-  },
-  detail: {
-    fontSize: 16,
-    marginVertical: 4,
-  },
-  noDataText: {
-    fontSize: 18,
-    color: 'gray',
-  },
+  itemTitle: { fontSize: 18, fontWeight: "bold" },
+  itemSub: { fontSize: 14, color: "gray", marginTop: 4 },
+  noDataText: { fontSize: 18, color: "gray" },
 });
