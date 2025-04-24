@@ -44,8 +44,8 @@ Search Results:
 
 - **React Native + Expo**
 - **React Navigation**
-- **AsyncStorage / SQLite** (for local data persistence)
-- **Context API / Redux** (for state management)
+- **AsyncStorage** (for local data persistence)
+- **Context API** (for state management)
 
 ---
 
