@@ -11,6 +11,14 @@
 Easily create new inventory items by entering item name, description, category, quantity, and more.
 
 **📸 Screenshot:**  
+Logo:
+
+
+![Add Stock](https://github.com/GamingHazard/Hanli-Inventory-app/blob/0dfcbe277d2ccb0630031069ed9f254272c6185c/assets/ic_launcher_foreground.png)
+
+
+
+
 ![Add Stock](https://github.com/GamingHazard/Hanli-Inventory-app/blob/main/assets/Screenshot_2025.04.24_13.12.08.721.png)
 
 ---
